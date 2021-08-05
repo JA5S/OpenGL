@@ -11,6 +11,15 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{09e79910-e903-4ce7-b77d-f5fe2993d724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{0a18c0e5-8506-496e-998a-19402e2292fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{70e21c0c-5d89-417e-9722-b665fef05bcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -22,10 +31,22 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="VertexArray.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="VertexArray.cpp">
+    <ClCompile Include="GLErrorManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,20 +56,30 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="IndexBuffer.h">
-      <Filter>src</Filter>
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="VertexArray.h">
-      <Filter>src</Filter>
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="VertexBufferLayout.h">
-      <Filter>src</Filter>
+      <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="GLErrorManager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
 </Project>

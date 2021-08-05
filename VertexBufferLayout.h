@@ -3,7 +3,7 @@
 #include <GL\glew.h>
 #include <vector>
 
-#include "Renderer.h"
+#include "GLErrorManager.h"
 
 struct VertexBufferElement
 {
