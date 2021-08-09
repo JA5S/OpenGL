@@ -18,6 +18,9 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 int main(void)
 {
     GLFWwindow* window;
@@ -27,7 +30,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -48,10 +51,10 @@ int main(void)
     {
         //vertex positions and textures
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f, 0.0f,//0
-             0.5f, -0.5f, 1.0f, 0.0f,//1
-             0.5f,  0.5f, 1.0f, 1.0f,//2
-            -0.5f,  0.5f, 0.0f, 1.0f //3
+            -50.0f, -50.0f, 0.0f, 0.0f,//0
+             50.0f, -50.0f, 1.0f, 0.0f,//1
+             50.0f,  50.0f, 1.0f, 1.0f,//2
+            -50.0f,  50.0f, 0.0f, 1.0f //3
         };
 
         unsigned int indices[]{
@@ -76,14 +79,18 @@ int main(void)
 
         IndexBuffer ib(indices, 6); //index buffer
 
-        //projection matrix
-        glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f); //first 4 floats are window boundaries
+        //model view projection matrix
+        glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f); //first 4 floats are window boundaries
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+
+        //model translation
+        glm::vec3 translationA(200, 200, 0);
+        glm::vec3 translationB(200, 200, 0);
 
         //create and bind shader
         Shader shader("Basic.shader");
         shader.Bind();
         //shader.SetUniform4f("u_Color", 0.2f, 0.8f, 0.4f, 1.0f); //set rgba vec4 in fragment shader  //no longer using u_color
-        shader.SetUniformMat4f("u_MVP", proj);
 
         //texture
         Texture texture("Sword.png");
@@ -97,6 +104,11 @@ int main(void)
 
         Renderer renderer;
 
+        //imgui
+        ImGui::CreateContext();
+        ImGui_ImplGlfwGL3_Init(window, true);
+        ImGui::StyleColorsDark();
+
         float r = 0.2f;
         float increment = 0.05f;
 
@@ -106,12 +118,29 @@ int main(void)
             /* Render here */
             renderer.Clear();
 
-            //update color
-            shader.Bind();
-            //shader.SetUniform4f("u_Color", r, 0.8f, 0.4f, 1.0f);  //no longer using u_color
+            ImGui_ImplGlfwGL3_NewFrame();
 
-            //draw call for triangles
-            renderer.Draw(va, ib, shader);
+            //first model
+            {
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                //shader.SetUniform4f("u_Color", r, 0.8f, 0.4f, 1.0f);  //no longer using u_color
+                shader.SetUniformMat4f("u_MVP", mvp);
+
+                renderer.Draw(va, ib, shader);
+            }
+
+            //second model
+            {
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                //shader.SetUniform4f("u_Color", r, 0.8f, 0.4f, 1.0f);  //no longer using u_color
+                shader.SetUniformMat4f("u_MVP", mvp);
+
+                renderer.Draw(va, ib, shader);
+            }
 
             if (r > 1.0f)
                 increment = -0.05f;
@@ -119,6 +148,17 @@ int main(void)
                 increment = 0.05f;
 
             r += increment;
+
+            {
+                //edit model translation
+                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
+                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
+                    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            }
+
+            ImGui::Render();
+            ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
@@ -128,6 +168,10 @@ int main(void)
         }
 
     }
+
+    //cleanup
+    ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
