@@ -23,6 +23,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{0581ba4e-6dcd-4fcf-9901-a84e8c3be71f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{cc45d9d6-7c15-4b1a-be58-ff50e26b5478}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -64,9 +67,27 @@
     <ClCompile Include="imgui\imgui_impl_glfw_gl3.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="TestClearColor.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTexture2D.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTriangle2D.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="TestQuadBatch.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="Primitive.Shader">
       <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>
@@ -95,7 +116,6 @@
     <ClInclude Include="stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -119,6 +139,24 @@
     </ClInclude>
     <ClInclude Include="imgui\stb_truetype.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="TestClearColor.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTexture2D.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTriangle2D.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="TestQuadBatch.h">
+      <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,6 +21,11 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+#include "TestClearColor.h"
+#include "TestTexture2D.h"
+#include "TestTriangle2D.h"
+#include "TestQuadBatch.h"
+
 int main(void)
 {
     GLFWwindow* window;
@@ -49,58 +54,9 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     {
-        //vertex positions and textures
-        float vertices[] = {
-            -50.0f, -50.0f, 0.0f, 0.0f,//0
-             50.0f, -50.0f, 1.0f, 0.0f,//1
-             50.0f,  50.0f, 1.0f, 1.0f,//2
-            -50.0f,  50.0f, 0.0f, 1.0f //3
-        };
-
-        unsigned int indices[]{
-            0, 1, 2,
-            2, 3, 0,
-        };
-
         //blender
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-        VertexArray va; //vertex array object (vao)
-        VertexBuffer vb(vertices, 4 * 4 * sizeof(float)); //vertex buffer
-
-        //provide specification of the vertices (tells gpu how to read the provided info)
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-
-        //add buffer and layout to vertex array
-        va.AddBuffer(vb, layout);
-
-        IndexBuffer ib(indices, 6); //index buffer
-
-        //model view projection matrix
-        glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f); //first 4 floats are window boundaries
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-
-        //model translation
-        glm::vec3 translationA(200, 200, 0);
-        glm::vec3 translationB(200, 200, 0);
-
-        //create and bind shader
-        Shader shader("Basic.shader");
-        shader.Bind();
-        //shader.SetUniform4f("u_Color", 0.2f, 0.8f, 0.4f, 1.0f); //set rgba vec4 in fragment shader  //no longer using u_color
-
-        //texture
-        Texture texture("Sword.png");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
-
-        va.Unbind();
-        vb.Unbind();
-        ib.Unbind();
-        shader.Unbind();
 
         Renderer renderer;
 
@@ -109,52 +65,36 @@ int main(void)
         ImGui_ImplGlfwGL3_Init(window, true);
         ImGui::StyleColorsDark();
 
-        float r = 0.2f;
-        float increment = 0.05f;
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+
+        testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+        testMenu->RegisterTest<test::TestTexture2D>("2D Textures");
+        testMenu->RegisterTest<test::TestTriangle2D>("2D Triangle");
+        testMenu->RegisterTest<test::TestQuadBatch>("Quad Batch");
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+            GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             /* Render here */
             renderer.Clear();
 
             ImGui_ImplGlfwGL3_NewFrame();
 
-            //first model
+            if (currentTest)
             {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-                glm::mat4 mvp = proj * view * model;
-                shader.Bind();
-                //shader.SetUniform4f("u_Color", r, 0.8f, 0.4f, 1.0f);  //no longer using u_color
-                shader.SetUniformMat4f("u_MVP", mvp);
-
-                renderer.Draw(va, ib, shader);
-            }
-
-            //second model
-            {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-                glm::mat4 mvp = proj * view * model;
-                shader.Bind();
-                //shader.SetUniform4f("u_Color", r, 0.8f, 0.4f, 1.0f);  //no longer using u_color
-                shader.SetUniformMat4f("u_MVP", mvp);
-
-                renderer.Draw(va, ib, shader);
-            }
-
-            if (r > 1.0f)
-                increment = -0.05f;
-            else if (r < 0.0f)
-                increment = 0.05f;
-
-            r += increment;
-
-            {
-                //edit model translation
-                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
-                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
-                    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRender();
+                ImGui::Begin("Test");
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+                currentTest->OnImGUI();
+                ImGui::End();
             }
 
             ImGui::Render();
@@ -166,6 +106,10 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
+
+        if (currentTest != testMenu)
+            delete testMenu;
+        delete currentTest;
 
     }
 
