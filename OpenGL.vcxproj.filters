@@ -90,6 +90,9 @@
     <None Include="Primitive.Shader">
       <Filter>res\shaders</Filter>
     </None>
+    <None Include="Batch.shader">
+      <Filter>res\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IndexBuffer.h">

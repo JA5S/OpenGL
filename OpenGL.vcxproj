@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.shader" />
+    <None Include="Batch.shader" />
     <None Include="Primitive.Shader" />
   </ItemGroup>
   <ItemGroup>
